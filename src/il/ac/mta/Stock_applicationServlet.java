@@ -11,12 +11,13 @@ public class Stock_applicationServlet extends HttpServlet {
 		int num1; 
 		int num2;
 		int num3;
-		num1 = 2;
-		num2 = 5;
-		num3 = num1*num2;
-		String resultStr = new String("<h1>Result of "+num1+"*"+num2+"="+num3+"</h1>");
+		num1 = 3;
+		num2 = 4;
+		num3 = 7;
+		int result = (num1+num2)*num3;
+		String resultStr = new String("<h1>Result of ("+num1+"+"+num2+")*"+num3+"="+result+"</h1>");
 		resp.getWriter().println(resultStr);
-		resp.getWriter().println("Hello, world daniel daniel");
+		resp.getWriter().println("Hello, my name is daniel lang");
 	}
 }
 
