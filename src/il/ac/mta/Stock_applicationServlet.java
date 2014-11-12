@@ -14,7 +14,7 @@ public class Stock_applicationServlet extends HttpServlet {
 		num1 = 2;
 		num2 = 5;
 		num3 = num1*num2;
-		String resultStr = new String("<h1>Result of"+num1+"*"+num2+"="+num3+"</h1>");
+		String resultStr = new String("<h1>Result of "+num1+"*"+num2+"="+num3+"</h1>");
 		resp.getWriter().println(resultStr);
 		resp.getWriter().println("Hello, world daniel daniel");
 	}
