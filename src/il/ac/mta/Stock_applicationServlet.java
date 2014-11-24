@@ -32,12 +32,11 @@ public class Stock_applicationServlet extends HttpServlet {
 		
 		double base = 20;
 		double exp = 13;
-		double result2 = Math.pow(base, exp);
+		long result2 = (long)Math.pow(base, exp);
 		String line3 = new String("3) Power of " + base + " with exp of "+ exp + " is " + result2);
 		
 		String resultStr2 = line1 + "<br>" + line2 + "<br>" + line3;
 		resp.getWriter().println(resultStr2);
-		
 	}
 }
 
