@@ -2,7 +2,7 @@ package il.ac.mta;
 
 import java.util.Date;
 
-public class stock 
+public class Stock 
 {
 	private String symbol;
 	private float ask;

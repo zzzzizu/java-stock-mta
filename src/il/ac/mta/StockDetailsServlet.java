@@ -17,7 +17,7 @@ public class StockDetailsServlet extends HttpServlet
 	{
 		resp.setContentType("text/html");
 		
-		stock stockDetails1 = new stock();
+		Stock stockDetails1 = new Stock();
 		
 		stockDetails1.setSymbol("PIH");
 		stockDetails1.setAsk((float) 12.4);
@@ -27,7 +27,7 @@ public class StockDetailsServlet extends HttpServlet
 		Date date = c.getTime();
 		stockDetails1.setDate(date);
 		
-		stock stockDetails2 = new stock();
+		Stock stockDetails2 = new Stock();
 		
 		stockDetails2.setSymbol("AAL");
 		stockDetails2.setAsk((float) 5.5);
@@ -37,7 +37,7 @@ public class StockDetailsServlet extends HttpServlet
 		Date date2 = c2.getTime();
 		stockDetails2.setDate(date);
 		
-		stock stockDetails3 = new stock();
+		Stock stockDetails3 = new Stock();
 		
 		stockDetails3.setSymbol("CAAs");
 		stockDetails3.setAsk((float) 31.5);
