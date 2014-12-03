@@ -47,7 +47,7 @@ public class StockDetailsServlet extends HttpServlet
 		Date date3 = c3.getTime();
 		stockDetails3.setDate(date);
 		
-		resp.getWriter().println("<b>stock 1:<b><br>");
+		resp.getWriter().println("<b>stock 1:<br>");
 		resp.getWriter().println(stockDetails1.getHtmlDescreption() + "<br>");
 		
 		resp.getWriter().println("stock 2:<br>");

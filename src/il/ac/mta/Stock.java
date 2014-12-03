@@ -44,7 +44,7 @@ public class Stock
 	
 	public String getHtmlDescreption()
 	{
-		String stockHtmlDetailsString = "<br>stock symbol<b>: " + getSymbol() + "<br>bid<b>: " + getBid() + "<br>ask<b>: " + getAsk() + "<br>date<b>: " + getDate() + "<br>";
+		String stockHtmlDetailsString = "<br>stock symbol: " + getSymbol() + "<br>bid: " + getBid() + "<br>ask: " + getAsk() + "<br>date: " + getDate() + "<br>";
 		return stockHtmlDetailsString;
 	}
 }
