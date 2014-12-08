@@ -1,11 +1,17 @@
 package il.ac.mta.service;
 
-import il.ac.mta.Stock;
 import il.ac.mta.model.Portfolio;
+import il.ac.mta.model.Stock;
 
 import java.util.Date;
 import java.util.Calendar;
 
+/** responsible to manage my stock
+ * 	changing any details on the stock
+ * 12/2014
+ * @author daniel
+ *
+ */
 public class PortfolioService
 {	
 	Portfolio myPortfolio = new Portfolio();

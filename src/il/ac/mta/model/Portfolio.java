@@ -1,30 +1,48 @@
 package il.ac.mta.model;
 
-import il.ac.mta.Stock;
-
 import java.util.Date;
 
+/**
+ * defining the portfolio parameters
+ * @author daniel
+ *
+ */
 public class Portfolio 
 {
 	int portfolioSize = 0;
 	private final int MAX_PORTFOLIO_SIZE = 5;
 	private Stock[] stocks;
 	private StocksStatus[] stocksStatus;
+	
 	public Portfolio()
 	{
 		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		stocksStatus = new StocksStatus[MAX_PORTFOLIO_SIZE];
 	}
+	
+	//copy c'tor
+	public Portfolio(Portfolio portfolio)
+	{
+		portfolioSize = portfolio.portfolioSize;
+		for(int i = 0; i < MAX_PORTFOLIO_SIZE; i++)
+		{
+			this.addStock(portfolio.getStocks()[i]);
+			stocks[i] = portfolio.stocks[i];
+			stocksStatus[i] = portfolio.stocksStatus[i];
+		}
+	}
+	
 	public Stock[] getStocks()
 	{
 		return stocks;
 	}
 	
-	public void addStock (Stock stock)
+	public void addStock(Stock stock)
 	{
 		this.stocks[portfolioSize] = stock;
 		this.portfolioSize++;
 	}
+	
 	// inner class:
 	public class StocksStatus
 	{
@@ -36,15 +54,26 @@ public class Portfolio
 		final static int DO_NOTHING = 0;
 		final static int BUY = 1;
 		final static int SELL = 2;
-	}
-	public String getHtmlString()
-	{
-		String titleAndPortfolioHtmlDetailsString = "<h1>Portfolio Title:</h1>";
-		for(int counter = 0; counter < 3; counter++)
+		
+		public StocksStatus(StocksStatus stockStatus)
 		{
-			String portfolioHtmlDetailsString = "<b>stock " + (counter+1) + ":</b> stock symbol: " + getStocks()[counter].getSymbol() + ", bid: " + getStocks()[counter].getBid() + ", ask: " + getStocks()[counter].getAsk() + ", date: " + getStocks()[counter].getDate() + "<br>";
-			titleAndPortfolioHtmlDetailsString = titleAndPortfolioHtmlDetailsString + portfolioHtmlDetailsString;
+			symbol = stockStatus.symbol;
+			currentBid = stockStatus.currentBid;
+			currentAsk = stockStatus.currentAsk;
+			date = stockStatus.date;
+			recommendation = stockStatus.recommendation;
+			stockQuantity = stockStatus.stockQuantity;
+			
 		}
-		return titleAndPortfolioHtmlDetailsString;
+	}
+	/**
+	 * responsible to print the portfolio tile and all the stocks information
+	 * @return
+	 */
+	Stock stock = new Stock();
+	public String getHtmlString(int counter)
+	{
+		String portfolioHtmlDetailsString = "<b>stock " + (counter+1) + ": </b>" + stock.getHtmlDescription(getStocks(), counter);
+		return portfolioHtmlDetailsString;
 	}
 }
