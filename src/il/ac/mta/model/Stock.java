@@ -13,19 +13,26 @@ public class Stock
 	private float ask;
 	private float bid;
 	private Date date;
+	
+	public Stock()
+	{
+		setSymbol(getSymbol());
+		setAsk(getAsk());
+		setBid(getBid());
+		setDate(getDate());
+	}
 	//copy c'tor
-	/*
 	public Stock(Stock stock)
 	{
-		//setSymbol(stock.getSymbol());
+		setSymbol(stock.getSymbol());
 		symbol = stock.getSymbol();
-		//setAsk(stock.getAsk());
+		setAsk(stock.getAsk());
 		ask = stock.getAsk();
-		//setBid(stock.getBid());
+		setBid(stock.getBid());
 		bid = stock.getBid();
-		//setDate(stock.getDate());
+		setDate(stock.getDate());
 		date = stock.getDate();
-	}*/
+	}
 	
 	public String getSymbol() 
 	{
@@ -61,7 +68,7 @@ public class Stock
 	}
 	
 	/**
-	 * method that suppose to return a string with the final printed stock details
+	 * method that suppose to return a string specific stock information
 	 * @return
 	 */
 	public String getHtmlDescription(Stock[] stocks, int counter)

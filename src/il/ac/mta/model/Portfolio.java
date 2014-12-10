@@ -9,13 +9,14 @@ import java.util.Date;
  */
 public class Portfolio 
 {
-	int portfolioSize = 0;
-	private final int MAX_PORTFOLIO_SIZE = 5;
+	int portfolioSize;
+	private static final int MAX_PORTFOLIO_SIZE = 5;
 	private Stock[] stocks;
 	private StocksStatus[] stocksStatus;
 	
 	public Portfolio()
 	{
+		portfolioSize = 0;
 		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		stocksStatus = new StocksStatus[MAX_PORTFOLIO_SIZE];
 	}
@@ -24,11 +25,10 @@ public class Portfolio
 	public Portfolio(Portfolio portfolio)
 	{
 		portfolioSize = portfolio.portfolioSize;
-		for(int i = 0; i < MAX_PORTFOLIO_SIZE; i++)
+		stocks = new Stock[5];
+		for(int i = 0; i < 3; i++)
 		{
-			this.addStock(portfolio.getStocks()[i]);
-			stocks[i] = portfolio.stocks[i];
-			stocksStatus[i] = portfolio.stocksStatus[i];
+			stocks[i] = new Stock(portfolio.stocks[i]);
 		}
 	}
 	
@@ -37,10 +37,29 @@ public class Portfolio
 		return stocks;
 	}
 	
+	/**
+	 * adding a new stock to the portfolio
+	 * @param stock
+	 */
 	public void addStock(Stock stock)
 	{
 		this.stocks[portfolioSize] = stock;
 		this.portfolioSize++;
+	}
+	
+	/**
+	 * removing the first stock in the portfolio
+	 * @param stocks
+	 */
+	public void removeFirstStock(Stock[] stocks)
+	{
+		this.portfolioSize--;
+		for(int i = 0; i < this.portfolioSize; i++)
+		this.stocks[i] = this.stocks[i+1];
+	}
+	public int getSize()
+	{
+		return portfolioSize;
 	}
 	
 	// inner class:
@@ -55,6 +74,16 @@ public class Portfolio
 		final static int BUY = 1;
 		final static int SELL = 2;
 		
+		public StocksStatus()
+		{
+			setSymbol(getSymbol());
+			setCurrentBid(getCurrentBid());
+			setCurrentAsk(getCurrentAsk());
+			setDate(getDate());
+			setRecommendation(getRecommendation());
+			setStockQuantity(getStockQuantity());
+		}
+		
 		public StocksStatus(StocksStatus stockStatus)
 		{
 			symbol = stockStatus.symbol;
@@ -62,12 +91,59 @@ public class Portfolio
 			currentAsk = stockStatus.currentAsk;
 			date = stockStatus.date;
 			recommendation = stockStatus.recommendation;
-			stockQuantity = stockStatus.stockQuantity;
-			
+			stockQuantity = stockStatus.stockQuantity;	
+		}
+		
+		public String getSymbol() {
+			return symbol;
+		}
+
+		public void setSymbol(String symbol) {
+			this.symbol = symbol;
+		}
+
+		public float getCurrentBid() {
+			return currentBid;
+		}
+
+		public void setCurrentBid(float currentBid) {
+			this.currentBid = currentBid;
+		}
+
+		public float getCurrentAsk() {
+			return currentAsk;
+		}
+
+		public void setCurrentAsk(float currentAsk) {
+			this.currentAsk = currentAsk;
+		}
+
+		public Date getDate() {
+			return date;
+		}
+
+		public void setDate(Date date) {
+			this.date = date;
+		}
+
+		public int getRecommendation() {
+			return recommendation;
+		}
+
+		public void setRecommendation(int recommendation) {
+			this.recommendation = recommendation;
+		}
+
+		public int getStockQuantity() {
+			return stockQuantity;
+		}
+
+		public void setStockQuantity(int stockQuantity) {
+			this.stockQuantity = stockQuantity;
 		}
 	}
 	/**
-	 * responsible to print the portfolio tile and all the stocks information
+	 * method that suppose to return a string with arranged stock information 
 	 * @return
 	 */
 	Stock stock = new Stock();
