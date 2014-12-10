@@ -25,13 +25,13 @@ public class Stock
 	public Stock(Stock stock)
 	{
 		setSymbol(stock.getSymbol());
-		symbol = stock.getSymbol();
-		setAsk(stock.getAsk());
-		ask = stock.getAsk();
+		//symbol = stock.getSymbol(); **thats the way you did it in class it works with it and without it 
+		setAsk(stock.getAsk());       //i think that this line and the previous line are doing exactly  
+		//ask = stock.getAsk();		  **the same action (if i am wrong i will be glad to get an explain why)
 		setBid(stock.getBid());
-		bid = stock.getBid();
+		//bid = stock.getBid();
 		setDate(stock.getDate());
-		date = stock.getDate();
+		//date = stock.getDate();
 	}
 	
 	public String getSymbol() 
