@@ -25,7 +25,7 @@ public class Portfolio
 	public Portfolio(Portfolio portfolio)
 	{
 		portfolioSize = portfolio.portfolioSize;
-		stocks = new Stock[5];
+		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 		for(int i = 0; i < 3; i++)
 		{
 			stocks[i] = new Stock(portfolio.stocks[i]);
