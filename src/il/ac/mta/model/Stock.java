@@ -14,24 +14,20 @@ public class Stock
 	private float bid;
 	private Date date;
 	
-	public Stock()
+	public Stock(String Symbol, float Ask, float Bid, Date Date)
 	{
-		setSymbol(getSymbol());
-		setAsk(getAsk());
-		setBid(getBid());
-		setDate(getDate());
+		symbol = Symbol;
+		ask = Ask;
+		bid = Bid;
+		date = Date;
 	}
 	//copy c'tor
 	public Stock(Stock stock)
 	{
 		setSymbol(stock.getSymbol());
-		//symbol = stock.getSymbol(); **thats the way you did it in class it works with it and without it 
-		setAsk(stock.getAsk());       //i think that this line and the previous line are doing exactly  
-		//ask = stock.getAsk();		  **the same action (if i am wrong i will be glad to get an explain why)
+		setAsk(stock.getAsk());     
 		setBid(stock.getBid());
-		//bid = stock.getBid();
-		setDate(stock.getDate());
-		//date = stock.getDate();
+		date = new Date(stock.date.getTime());
 	}
 	
 	public String getSymbol() 
@@ -71,9 +67,9 @@ public class Stock
 	 * method that suppose to return a string specific stock information
 	 * @return
 	 */
-	public String getHtmlDescription(Stock[] stocks, int counter)
+	public String getHtmlDescription()
 	{
-		String stockHtmlDetailsString = "stock symbol: " + stocks[counter].getSymbol() + ", bid: " + stocks[counter].getBid() + ", ask: " + stocks[counter].getAsk() + ", date: " + stocks[counter].getDate() + "<br>";
+		String stockHtmlDetailsString = "stock symbol: " + getSymbol() + ", bid: " + getBid() + "$, ask: " + getAsk() + "$, date: " + getDate();
 		return stockHtmlDetailsString;
 	}
 }
