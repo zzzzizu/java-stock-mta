@@ -79,10 +79,10 @@ public class Portfolio
 	}
 	
 	/**
-	 * removing the first stock in the portfolio
+	 * removing a chosen stock from the portfolio
 	 * @param stocks
 	 */
-	public boolean removeStock(String symbol)// to complete
+	public boolean removeStock(String symbol)
 	{
 		boolean isStock = false;
 		for(int i = 0; i < this.portfolioSize; i++)
