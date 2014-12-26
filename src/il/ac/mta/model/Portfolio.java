@@ -121,7 +121,7 @@ public class Portfolio
 		return portfolioSize;
 	}
 	/**
-	 * adding an amount to the current balance
+	 * return the current balance of your account
 	 * @param amount
 	 */
 	public float getBalance()
