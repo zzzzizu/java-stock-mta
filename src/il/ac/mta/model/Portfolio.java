@@ -1,7 +1,5 @@
 package il.ac.mta.model;
 
-import java.util.Date;
-
 
 /**
  * defining the portfolio parameters
@@ -11,18 +9,16 @@ import java.util.Date;
 public class Portfolio 
 {
 	public enum ALGO_RECOMMENDATION{DO_NOTHING, BUY, SELL};
-	int portfolioSize;
+	private int portfolioSize;
 	private float balance;
 	private static final int MAX_PORTFOLIO_SIZE = 5;
-	private Stock[] stocks;
-	private StocksStatus[] stocksStatus;
+	private StockStatus[] stockStatus;
 	
 	public Portfolio()
 	{
 		portfolioSize = 0;
 		balance = 0;
-		stocks = new Stock[MAX_PORTFOLIO_SIZE];
-		stocksStatus = new StocksStatus[MAX_PORTFOLIO_SIZE];
+		stockStatus = new StockStatus[MAX_PORTFOLIO_SIZE];
 	}
 	
 	//copy c'tor
@@ -30,18 +26,21 @@ public class Portfolio
 	{
 		portfolioSize = portfolio.portfolioSize;
 		balance = portfolio.balance;
-		stocks = new Stock[MAX_PORTFOLIO_SIZE];
-		stocksStatus = new StocksStatus[MAX_PORTFOLIO_SIZE];
+		stockStatus = new StockStatus[MAX_PORTFOLIO_SIZE];
 		for(int i = 0; i < 3; i++)
 		{
-			stocks[i] = new Stock(portfolio.stocks[i]);
-			stocksStatus[i] = new StocksStatus(portfolio.stocksStatus[i]);
+			stockStatus[i] = new StockStatus(portfolio.stockStatus[i], portfolio.stockStatus[i].getRecommendation(), portfolio.stockStatus[i].getStockQuantity());
 		}
 	}
 	
+	/*public StockStatus[] getStockStatus()
+	{
+		return stockStatus;
+	}*/ // used to check my copy copy c'tor of StockStatus
+	
 	public Stock[] getStocks()
 	{
-		return stocks;
+		return stockStatus;
 	}
 	
 	/**
@@ -52,7 +51,7 @@ public class Portfolio
 	{
 		for(int i = 0; i < this.portfolioSize; i++)
 		{
-			if(stocks[i].getSymbol().equals(stock.getSymbol()))
+			if(stockStatus[i].getSymbol().equals(stock.getSymbol()))
 			{
 				System.out.println("you already have this stock in your portfolio");
 				return;
@@ -66,14 +65,7 @@ public class Portfolio
 		
 		else
 		{
-			stocksStatus[portfolioSize] = new StocksStatus();
-			this.stocks[portfolioSize] = stock;
-			this.stocksStatus[portfolioSize].setSymbol(getStocks()[portfolioSize].getSymbol());
-			this.stocksStatus[portfolioSize].setCurrentAsk(getStocks()[portfolioSize].getAsk());
-			this.stocksStatus[portfolioSize].setCurrentBid(getStocks()[portfolioSize].getBid());
-			this.stocksStatus[portfolioSize].setDate(new Date(getStocks()[portfolioSize].getDate().getTime()));
-			this.stocksStatus[portfolioSize].setRecommendation(ALGO_RECOMMENDATION.DO_NOTHING);
-			this.stocksStatus[portfolioSize].setStockQuantity(0);
+			stockStatus[portfolioSize] = new StockStatus(stock, ALGO_RECOMMENDATION.DO_NOTHING, 0);
 			this.portfolioSize++;
 		}
 	}
@@ -87,7 +79,7 @@ public class Portfolio
 		boolean isStock = false;
 		for(int i = 0; i < this.portfolioSize; i++)
 		{
-			if(stocks[i].getSymbol().equals(symbol))
+			if(stockStatus[i].getSymbol().equals(symbol))
 			{
 				isStock = true;
 			}
@@ -96,8 +88,8 @@ public class Portfolio
 				if(portfolioSize != i+1)
 				{
 					sellStock(symbol, -1);
-					this.stocks[i] = this.stocks[i+1];
-					this.stocksStatus[i] = this.stocksStatus[i+1];
+					//this.stocks[i] = this.stocks[i+1];
+					this.stockStatus[i] = this.stockStatus[i+1];
 				}
 				else
 				{
@@ -151,7 +143,7 @@ public class Portfolio
 		float stocksValue = 0;
 		for(int i = 0;i < this.portfolioSize;i++)
 		{
-			stocksValue += stocksStatus[i].getCurrentBid()*stocksStatus[i].getStockQuantity();
+			stocksValue += stockStatus[i].getBid()*stockStatus[i].getStockQuantity();
 		}
 		return stocksValue;
 	}
@@ -181,7 +173,7 @@ public class Portfolio
 		{
 			for(int i = 0; i < this.portfolioSize; i++)
 			{
-				if(stocks[i].getSymbol().equals(symbol))
+				if(stockStatus[i].getSymbol().equals(symbol))
 				{
 					isStock = true;
 				}
@@ -189,19 +181,19 @@ public class Portfolio
 				{
 					if(quantity == -1)
 					{
-						updateBalance(this.stocksStatus[i].getCurrentBid()*this.stocksStatus[i].getStockQuantity());
-						this.stocksStatus[i].setStockQuantity(0);
+						updateBalance(this.stockStatus[i].getBid()*this.stockStatus[i].getStockQuantity());
+						this.stockStatus[i].setStockQuantity(0);
 						return isStock;
 					}
 					else
 					{
-						if(quantity > this.stocksStatus[i].getStockQuantity())
+						if(quantity > this.stockStatus[i].getStockQuantity())
 						{
 							System.out.println("you don't have " + quantity + " " + symbol + " stocks to sell");
 							return false;
 						}
-						updateBalance(this.stocksStatus[i].getCurrentBid()*quantity);
-						this.stocksStatus[i].setStockQuantity(this.stocksStatus[i].getStockQuantity()-quantity);
+						updateBalance(this.stockStatus[i].getBid()*quantity);
+						this.stockStatus[i].setStockQuantity(this.stockStatus[i].getStockQuantity()-quantity);
 						return isStock;
 					}
 				}	
@@ -229,14 +221,14 @@ public class Portfolio
 		{
 			for(int i = 0; i < this.portfolioSize; i++)
 			{
-				if(stocks[i].getSymbol().equals(symbol))
+				if(stockStatus[i].getSymbol().equals(symbol))
 				{
 					isStock = true;
 				}
 				if(isStock)
 				{
 					float maxQuantity;
-					maxQuantity = getBalance()/stocksStatus[i].getCurrentAsk();
+					maxQuantity = getBalance()/stockStatus[i].getAsk();
 		
 					if(quantity > maxQuantity)
 					{
@@ -247,14 +239,14 @@ public class Portfolio
 					if(quantity == -1)
 					{
 						quantity = (int)maxQuantity;
-						updateBalance(-(this.stocksStatus[i].getCurrentAsk()*quantity));
-						this.stocksStatus[i].setStockQuantity(quantity);
+						updateBalance(-(this.stockStatus[i].getAsk()*quantity));
+						this.stockStatus[i].setStockQuantity(quantity);
 						return isStock;
 					}
 					else
 					{
-						updateBalance(-(this.stocksStatus[i].getCurrentAsk()*quantity));
-						this.stocksStatus[i].setStockQuantity(this.stocksStatus[i].getStockQuantity()+quantity);
+						updateBalance(-(this.stockStatus[i].getAsk()*quantity));
+						this.stockStatus[i].setStockQuantity(this.stockStatus[i].getStockQuantity()+quantity);
 						return isStock;
 					}
 				}	
@@ -274,81 +266,9 @@ public class Portfolio
 		titleAndPortfolioHtmlDetailsString = titleAndPortfolioHtmlDetailsString + "Total Portfolio Value: " + getTotalValue() + "$, Total Stocks value: " + getStocksValue() + "$, Balance: " + getBalance() + "$<br><br>";
 		for(int i = 0; i < this.portfolioSize; i++)
 		{
-			titleAndPortfolioHtmlDetailsString = titleAndPortfolioHtmlDetailsString + "<b>stock " + (i+1) + ": </b>" + stocks[i].getHtmlDescription() + ", quantity: " + stocksStatus[i].getStockQuantity() + "<br>";
+			titleAndPortfolioHtmlDetailsString = titleAndPortfolioHtmlDetailsString + "<b>stock " + (i+1) + ": </b>" + stockStatus[i].getHtmlDescription() + ", quantity: " + stockStatus[i].getStockQuantity() + "<br>";
 		} 
 		
 		return titleAndPortfolioHtmlDetailsString;
 	}
-	
-	// inner class:
-	public class StocksStatus
-	{
-		String symbol;
-		float currentBid, currentAsk;
-		Date date;
-		ALGO_RECOMMENDATION recommendation;
-		int stockQuantity;
-		
-		public StocksStatus(){}
-		// i defined the operators in the addStock method
-		
-		public StocksStatus(StocksStatus stockStatus)
-		{
-			symbol = stockStatus.symbol;
-			currentBid = stockStatus.currentBid;
-			currentAsk = stockStatus.currentAsk;
-			date = new Date(stockStatus.date.getTime());
-			recommendation = stockStatus.recommendation;
-			stockQuantity = stockStatus.stockQuantity;	
-		}
-		
-		public String getSymbol() {
-			return symbol;
-		}
-
-		public void setSymbol(String symbol) {
-			this.symbol = symbol;
-		}
-
-		public float getCurrentBid() {
-			return currentBid;
-		}
-
-		public void setCurrentBid(float currentBid) {
-			this.currentBid = currentBid;
-		}
-
-		public float getCurrentAsk() {
-			return currentAsk;
-		}
-
-		public void setCurrentAsk(float currentAsk) {
-			this.currentAsk = currentAsk;
-		}
-
-		public Date getDate() {
-			return date;
-		}
-
-		public void setDate(Date date) {
-			this.date = date;
-		}
-
-		public ALGO_RECOMMENDATION getRecommendation() {
-			return recommendation;
-		}
-
-		public void setRecommendation(ALGO_RECOMMENDATION recommendation) {
-			this.recommendation = recommendation;
-		}
-
-		public int getStockQuantity() {
-			return stockQuantity;
-		}
-
-		public void setStockQuantity(int stockQuantity) {
-			this.stockQuantity = stockQuantity;
-		}
-	}
-	
 }

@@ -2,6 +2,7 @@ package il.ac.mta.servlet;
 
 import il.ac.mta.model.Portfolio;
 import il.ac.mta.model.Stock;
+import il.ac.mta.model.StockStatus;
 import il.ac.mta.service.PortfolioService;
 
 import java.io.IOException;
@@ -25,7 +26,8 @@ public class PortfolioServlet extends HttpServlet
 		
 		PortfolioService portfolioService = new PortfolioService();
 		Portfolio portfolio = portfolioService.getPortfolio();
-		Stock[] stocks = portfolio.getStocks();
+		Stock[] stocks = portfolio.getStocks();  // this line is here from the 3rd exercise and it is needless  
+		// don't we need to erase it?
 		
 		/**
 		 * print all the stocks information and the head line
