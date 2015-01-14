@@ -1,5 +1,8 @@
 package il.ac.mta.model;
 
+import il.ac.mta.exception.*;
+
+import java.util.logging.Logger;
 
 /**
  * defining the portfolio parameters
@@ -13,6 +16,7 @@ public class Portfolio
 	private float balance;
 	private static final int MAX_PORTFOLIO_SIZE = 5;
 	private StockStatus[] stockStatus;
+	private Logger log = Logger.getLogger(Portfolio.class.getSimpleName());
 	
 	public Portfolio()
 	{
@@ -46,21 +50,25 @@ public class Portfolio
 	/**
 	 * adding a new stock and stock status to the portfolio 
 	 * @param stock
+	 * @throws StockAlreadyExistsException 
+	 * @throws PortfolioFullException 
 	 */
-	public void addStock(Stock stock)
+	public void addStock(Stock stock) throws StockAlreadyExistsException, PortfolioFullException
 	{
 		for(int i = 0; i < this.portfolioSize; i++)
 		{
 			if(stockStatus[i].getSymbol().equals(stock.getSymbol()))
 			{
-				System.out.println("you already have this stock in your portfolio");
-				return;
+				log.warning("Stock " + stock.getSymbol() + " already exists");
+				throw new StockAlreadyExistsException(stock.getSymbol());
 			}
 		}
 		
 		if(this.portfolioSize >= MAX_PORTFOLIO_SIZE)
 		{
-			System.out.println("Can’t add new stock, portfolio can have only " + MAX_PORTFOLIO_SIZE + " stocks");
+			//System.out.println("Can’t add new stock, portfolio can have only " + MAX_PORTFOLIO_SIZE + " stocks");
+			log.warning("You had reached maximum portfolio size [" + MAX_PORTFOLIO_SIZE + "]");
+			throw new PortfolioFullException();
 		}
 		
 		else
@@ -73,8 +81,10 @@ public class Portfolio
 	/**
 	 * removing a chosen stock from the portfolio
 	 * @param stocks
+	 * @throws StockNotExistException 
+	 * @throws BalanceException 
 	 */
-	public boolean removeStock(String symbol)
+	public void removeStock(String symbol) throws StockNotExistException, NotEnoughQuantityExepction, NegativeQuantityException
 	{
 		boolean isStock = false;
 		for(int i = 0; i < this.portfolioSize; i++)
@@ -88,24 +98,24 @@ public class Portfolio
 				if(portfolioSize != i+1)
 				{
 					sellStock(symbol, -1);
-					//this.stocks[i] = this.stocks[i+1];
 					this.stockStatus[i] = this.stockStatus[i+1];
 				}
 				else
 				{
 					sellStock(symbol, -1);
 				}
+				break;
 			}	
 		}
 		if(isStock)
 		{
 			portfolioSize--;
-			return isStock;
 		}
 		else
 		{
-			System.out.println("you dont have this stock in your list");
-			return isStock;
+			//System.out.println("you don't have this stock in your list");
+			log.warning("Stock " + symbol + " isn't exists");
+			throw new StockNotExistException(symbol);
 		}
 	}
 	public int getSize()
@@ -160,14 +170,16 @@ public class Portfolio
 	 * selling an amount of any stock
 	 * @param symbol
 	 * @param quantity
+	 * @throws StockNotExistException 
+	 * @throws BalanceException 
 	 */
-	public boolean sellStock(String symbol, int quantity)
+	public void sellStock(String symbol, int quantity) throws StockNotExistException, NotEnoughQuantityExepction, NegativeQuantityException
 	{
 		boolean isStock = false;
 		if(quantity < -1)
 		{
-			System.out.println("you can't enter negative quantity");
-			return false;
+			log.warning("you can't enter negative quantity");
+			throw new NegativeQuantityException();
 		}
 		else
 		{
@@ -183,39 +195,43 @@ public class Portfolio
 					{
 						updateBalance(this.stockStatus[i].getBid()*this.stockStatus[i].getStockQuantity());
 						this.stockStatus[i].setStockQuantity(0);
-						return isStock;
+						return;
 					}
 					else
 					{
 						if(quantity > this.stockStatus[i].getStockQuantity())
 						{
-							System.out.println("you don't have " + quantity + " " + symbol + " stocks to sell");
-							return false;
+							//System.out.println("you don't have " + quantity + " " + symbol + " stocks to sell");
+							log.warning("you don't have " + quantity + " " + symbol + " stocks to sell");
+							throw new NotEnoughQuantityExepction(symbol, quantity);
 						}
 						updateBalance(this.stockStatus[i].getBid()*quantity);
 						this.stockStatus[i].setStockQuantity(this.stockStatus[i].getStockQuantity()-quantity);
-						return isStock;
+						return;
 					}
 				}	
 			}
-			System.out.println("you don't have a stock with this name on your list");
-			return isStock;
+			//System.out.println("you don't have a stock with this name on your list");
+			log.warning("Stock " + symbol + " isn't exists");
+			throw new StockNotExistException(symbol);
 		}
 	}
 	
 	/**
-	 * buying any amoung of any stock
+	 * buying any amount of any stock
 	 * @author daniel
+	 * @throws BalanceException 
+	 * @throws StockNotExistException 
 	 *
 	 */
 	
-	public boolean buyStock(String symbol, int quantity)
+	public void buyStock(String symbol, int quantity) throws NegativeBalanceException, StockNotExistException, NegativeQuantityException
 	{
 		boolean isStock = false;
 		if(quantity < -1)
 		{
-			System.out.println("you can't enter negative quantity");
-			return false;
+			log.warning("you can't enter negative quantity");
+			throw new NegativeQuantityException();
 		}
 		else
 		{
@@ -232,8 +248,9 @@ public class Portfolio
 		
 					if(quantity > maxQuantity)
 					{
-						System.out.println("you don't have enough money in your balance to buy " + quantity + " " + symbol);
-						return false;
+						//System.out.println("you don't have enough money in your balance to buy " + quantity + " " + symbol);
+						log.warning("you don't have enough money in your balance to buy " + quantity + " " + symbol);
+						throw new NegativeBalanceException(quantity);
 					}
 					
 					if(quantity == -1)
@@ -241,18 +258,19 @@ public class Portfolio
 						quantity = (int)maxQuantity;
 						updateBalance(-(this.stockStatus[i].getAsk()*quantity));
 						this.stockStatus[i].setStockQuantity(quantity);
-						return isStock;
+						return;
 					}
 					else
 					{
 						updateBalance(-(this.stockStatus[i].getAsk()*quantity));
 						this.stockStatus[i].setStockQuantity(this.stockStatus[i].getStockQuantity()+quantity);
-						return isStock;
+						return;
 					}
 				}	
 			}
-			System.out.println("you don't have a stock with this name on your list");
-			return isStock;
+			//System.out.println("you don't have a stock with this name on your list");
+			log.warning("Stock " + symbol + " isn't exists");
+			throw new StockNotExistException(symbol);
 		}
 	}
 	

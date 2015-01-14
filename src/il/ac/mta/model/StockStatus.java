@@ -18,7 +18,7 @@ public class StockStatus extends Stock
 	// copy c'tor
 	public StockStatus(StockStatus stockStatus)
 	{
-		super(stockStatus.symbol, stockStatus.ask, stockStatus.bid, new Date(stockStatus.date.getTime()));
+		super(stockStatus.symbol, stockStatus.ask, stockStatus.bid, stockStatus.date);
 		this.recommendation = stockStatus.recommendation;
 		this.stockQuantity = stockStatus.stockQuantity;
 	}

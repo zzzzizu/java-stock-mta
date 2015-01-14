@@ -1,13 +1,17 @@
 package il.ac.mta.servlet;
 
+import il.ac.mta.exception.NegativeBalanceException;
+import il.ac.mta.exception.NegativeQuantityException;
+import il.ac.mta.exception.NotEnoughQuantityExepction;
+import il.ac.mta.exception.PortfolioFullException;
+import il.ac.mta.exception.StockAlreadyExistsException;
+import il.ac.mta.exception.StockNotExistException;
 import il.ac.mta.model.Portfolio;
-import il.ac.mta.model.Stock;
-import il.ac.mta.model.StockStatus;
 import il.ac.mta.service.PortfolioService;
 
 import java.io.IOException;
-import java.util.Date;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,18 +24,46 @@ import javax.servlet.http.HttpServletResponse;
 public class PortfolioServlet extends HttpServlet
 {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException 
+			throws ServletException, IOException 
 	{
 		resp.setContentType("text/html");
 		
 		PortfolioService portfolioService = new PortfolioService();
-		Portfolio portfolio = portfolioService.getPortfolio();
-		Stock[] stocks = portfolio.getStocks();  // this line is here from the 3rd exercise and it is needless  
-		// don't we need to erase it?
+		Portfolio portfolio;
 		
 		/**
-		 * print all the stocks information and the head line
+		 * print all the stocks information and the head line or print an exception
+		 * in case you have one
 		 */
-		resp.getWriter().println(portfolio.getHtmlString());
+		
+		try
+		{
+			portfolio = portfolioService.getPortfolio();
+			resp.getWriter().println(portfolio.getHtmlString());
+		}
+		catch(NegativeBalanceException e)
+		{
+			resp.getWriter().println(e.getMessage());
+		}
+		catch(PortfolioFullException ee)
+		{
+			resp.getWriter().println(ee.getMessage());
+		}
+		catch(StockNotExistException eee)
+		{
+			resp.getWriter().println(eee.getMessage());
+		}
+		catch(StockAlreadyExistsException eeee)
+		{
+			resp.getWriter().println(eeee.getMessage());
+		}
+		catch(NotEnoughQuantityExepction eeeee)
+		{
+			resp.getWriter().println(eeeee.getMessage());
+		}
+		catch(NegativeQuantityException eeeeee)
+		{
+			resp.getWriter().println(eeeeee.getMessage());
+		}
 	}
 }
