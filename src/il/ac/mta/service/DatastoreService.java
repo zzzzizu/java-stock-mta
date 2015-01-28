@@ -177,7 +177,7 @@ public class DatastoreService {
 		return ret;
 	}
 
-	public Portfolio loadPortfolilo() throws BalanceException {
+	public Portfolio loadPortfolilo() {
 		Portfolio portfolio;
 		com.google.appengine.api.datastore.DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -200,7 +200,11 @@ public class DatastoreService {
 			}
 			
 			portfolio.setTitle((String)entity.getProperty(TITLE));
-			portfolio.updateBalance(((Double)entity.getProperty(PORTFOLIO_BALANCE)).floatValue());
+			try {
+				portfolio.updateBalance(((Double)entity.getProperty(PORTFOLIO_BALANCE)).floatValue());
+			} catch (BalanceException e) {
+				//won't never happen
+			}
 
 		} catch (EntityNotFoundException e) {
 			//no account details found - create a new object and store it to db.
