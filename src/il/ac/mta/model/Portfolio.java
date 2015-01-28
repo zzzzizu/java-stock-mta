@@ -2,6 +2,7 @@ package il.ac.mta.model;
 
 import il.ac.mta.exception.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -14,8 +15,10 @@ public class Portfolio
 	public enum ALGO_RECOMMENDATION{DO_NOTHING, BUY, SELL};
 	private int portfolioSize;
 	private float balance;
-	private static final int MAX_PORTFOLIO_SIZE = 5;
+	public static final int MAX_PORTFOLIO_SIZE = 5;
 	private StockStatus[] stockStatus;
+	private String title;
+
 	private Logger log = Logger.getLogger(Portfolio.class.getSimpleName());
 	
 	public Portfolio()
@@ -37,12 +40,29 @@ public class Portfolio
 		}
 	}
 	
+	public Portfolio(List<StockStatus> stockStatuses) {
+		for(int i = 0 ; i < stockStatuses.size(); i++)
+		{
+			stockStatus[i] = stockStatuses.get(i);
+		}
+		this.portfolioSize = stockStatuses.size(); 
+	}
+	public String getTitle() 
+	{
+		return title;
+	}
+
+	public void setTitle(String title) 
+	{
+		this.title = title;
+	}
+	
 	/*public StockStatus[] getStockStatus()
 	{
 		return stockStatus;
 	}*/ // used to check my copy copy c'tor of StockStatus
 	
-	public Stock[] getStocks()
+	public StockStatus[] getStocks()
 	{
 		return stockStatus;
 	}
@@ -280,13 +300,19 @@ public class Portfolio
 	 */
 	public String getHtmlString()
 	{
-		String titleAndPortfolioHtmlDetailsString = "<h1>Exercise 7 portfolio</h1>";
-		titleAndPortfolioHtmlDetailsString = titleAndPortfolioHtmlDetailsString + "Total Portfolio Value: " + getTotalValue() + "$, Total Stocks value: " + getStocksValue() + "$, Balance: " + getBalance() + "$<br><br>";
+		String titleAndPortfolioHtmlDetailsString;
+		setTitle("<h1>Exercise 9 portfolio</h1>");
+		titleAndPortfolioHtmlDetailsString = title + "Total Portfolio Value: " + getTotalValue() + "$, Total Stocks value: " + getStocksValue() + "$, Balance: " + getBalance() + "$<br><br>";
 		for(int i = 0; i < this.portfolioSize; i++)
 		{
 			titleAndPortfolioHtmlDetailsString = titleAndPortfolioHtmlDetailsString + "<b>stock " + (i+1) + ": </b>" + stockStatus[i].getHtmlDescription() + ", quantity: " + stockStatus[i].getStockQuantity() + "<br>";
 		} 
 		
 		return titleAndPortfolioHtmlDetailsString;
+	}
+
+	public StockStatus findBySymbol(String symbol)//to do 
+	{
+		return null;
 	}
 }

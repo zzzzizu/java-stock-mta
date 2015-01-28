@@ -30,6 +30,8 @@ public class Stock
 		date = new Date(stock.date.getTime());
 	}
 	
+	public Stock() {
+	}
 	public String getSymbol() 
 	{
 		return symbol;

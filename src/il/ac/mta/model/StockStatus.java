@@ -15,6 +15,17 @@ public class StockStatus extends Stock
 		this.setStockQuantity(stockQuantity1);
 	}
 	
+	public StockStatus(){
+		super();
+	}
+	
+	public StockStatus(Stock stock)
+	{
+		super(stock);
+		this.recommendation = ALGO_RECOMMENDATION.DO_NOTHING;
+		this.stockQuantity = 0;
+	}
+	
 	// copy c'tor
 	public StockStatus(StockStatus stockStatus)
 	{

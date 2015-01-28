@@ -1,69 +1,38 @@
 package il.ac.mta.servlet;
 
-import il.ac.mta.exception.NegativeBalanceException;
-import il.ac.mta.exception.NegativeQuantityException;
-import il.ac.mta.exception.NotEnoughQuantityExepction;
-import il.ac.mta.exception.PortfolioFullException;
-import il.ac.mta.exception.StockAlreadyExistsException;
-import il.ac.mta.exception.StockNotExistException;
-import il.ac.mta.model.Portfolio;
-import il.ac.mta.service.PortfolioService;
+import il.ac.mta.dto.PortfolioDto;
+import il.ac.mta.dto.PortfolioTotalStatus;
+import il.ac.mta.model.StockStatus;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * responsible to print according to html
- * @author daniel
- *
- */
-public class PortfolioServlet extends HttpServlet
-{
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException 
-	{
-		resp.setContentType("text/html");
+public class PortfolioServlet extends AbstractAlgoServlet {
+
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		PortfolioService portfolioService = new PortfolioService();
-		Portfolio portfolio;
+		resp.setContentType("application/json");
 		
-		/**
-		 * print all the stocks information and the head line or print an exception
-		 * in case you have one
-		 */
+		PortfolioTotalStatus[] totalStatus = portfolioService.getPortfolioTotalStatus();
+		StockStatus[] stockStatusArray = portfolioService.getPortfolio().getStocks();
+		List<StockStatus> stockStatusList = new ArrayList<>();
+		for (StockStatus ss : stockStatusArray) {
+			if(ss != null)
+				stockStatusList.add(ss);
+		}
 		
-		try
-		{
-			portfolio = portfolioService.getPortfolio();
-			resp.getWriter().println(portfolio.getHtmlString());
-		}
-		catch(NegativeBalanceException e)
-		{
-			resp.getWriter().println(e.getMessage());
-		}
-		catch(PortfolioFullException ee)
-		{
-			resp.getWriter().println(ee.getMessage());
-		}
-		catch(StockNotExistException eee)
-		{
-			resp.getWriter().println(eee.getMessage());
-		}
-		catch(StockAlreadyExistsException eeee)
-		{
-			resp.getWriter().println(eeee.getMessage());
-		}
-		catch(NotEnoughQuantityExepction eeeee)
-		{
-			resp.getWriter().println(eeeee.getMessage());
-		}
-		catch(NegativeQuantityException eeeeee)
-		{
-			resp.getWriter().println(eeeeee.getMessage());
-		}
+		PortfolioDto pDto = new PortfolioDto();
+		pDto.setTitle(portfolioService.getPortfolio().getTitle());
+		pDto.setTotalStatus(totalStatus);
+		pDto.setStockTable(stockStatusList);
+		resp.getWriter().print(withNullObjects().toJson(pDto));
 	}
 }
