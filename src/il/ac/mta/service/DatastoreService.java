@@ -45,11 +45,7 @@ public class DatastoreService {
 	private static final String NAMESPACE_STOCK = "stock";
 	private static final String NAMESPACE_STOCK_SYMBOL = "stock_symbol";
 
-	private static final String NAMESPACE_ACCOUNT = "account";
 	private static final String BALANCE = "balance";
-	private static final String PASSWORD = "password";
-	private static final String USERNAME = "username";
-
 	private static final String NAMESPACE_PORTFOLIO = "portfolio";
 	private static final String TITLE = "title";
 	private static final String PORTFOLIO_BALANCE = "balance";
@@ -200,11 +196,7 @@ public class DatastoreService {
 			}
 			
 			portfolio.setTitle((String)entity.getProperty(TITLE));
-			try {
-				portfolio.updateBalance(((Double)entity.getProperty(PORTFOLIO_BALANCE)).floatValue());
-			} catch (BalanceException e) {
-				//won't never happen
-			}
+			portfolio.updateBalance(((Double)entity.getProperty(PORTFOLIO_BALANCE)).floatValue());
 
 		} catch (EntityNotFoundException e) {
 			//no account details found - create a new object and store it to db.
